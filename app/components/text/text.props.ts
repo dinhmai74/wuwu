@@ -1,12 +1,8 @@
-import { TextStyle, TextProps as TextProperties } from "react-native"
+import { TextStyle } from "react-native"
+import { TextProps as TextProperties } from "@ui-kitten/components"
 import { TextPresets } from "./text.presets"
 
 export interface TextProps extends TextProperties {
-  /**
-   * Children components.
-   */
-  children?: React.ReactNode
-
   /**
    * Text which is looked up via i18n.
    */
@@ -27,9 +23,9 @@ export interface TextProps extends TextProperties {
    * An optional style override useful for padding & margin.
    */
   style?: TextStyle | TextStyle[]
-
-  /**
-   * One of the different types of text presets.
-   */
   preset?: TextPresets
+  color?: string
+  themeColor?: string
+  underline?: boolean
 }
+

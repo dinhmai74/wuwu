@@ -1,24 +1,45 @@
 import * as React from "react"
-import { Text as ReactNativeText } from "react-native"
+import { Text as ReactNativeText, useTheme } from "@ui-kitten/components"
 import { presets } from "./text.presets"
 import { TextProps } from "./text.props"
 import { translate } from "../../i18n"
 import { mergeAll, flatten } from "ramda"
 
-/**
- * For your text displaying needs.
- *
- * This component is a HOC over the built-in React Native one.
- */
 export function Text(props: TextProps) {
   // grab the props
-  const { preset = "default", tx, txOptions, text, children, style: styleOverride, ...rest } = props
+  const {
+    preset,
+    tx,
+    color,
+    themeColor,
+    txOptions,
+    text,
+    children,
+    style: styleOverride,
+    underline,
+    ...rest
+  } = props
 
   // figure out which content to use
   const i18nText = tx && translate(tx, txOptions)
-  const content = i18nText || text || children
+  let content: any
+  if (typeof children === "string") {
+    content = translate(children, txOptions)
+  } else content = children || translate(text, txOptions) || i18nText
+  const theme = useTheme()
 
-  const style = mergeAll(flatten([presets[preset] || presets.default, styleOverride]))
+  let colorStyle: any
+  if (themeColor || color) {
+    colorStyle = themeColor ? { color: theme[themeColor] } : { color }
+  }
+  const style = mergeAll(
+    flatten([
+      presets[preset],
+      colorStyle,
+      underline && { textDecorationLine: "underline" },
+      styleOverride,
+    ]),
+  )
 
   return (
     <ReactNativeText {...rest} style={style}>

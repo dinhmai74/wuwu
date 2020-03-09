@@ -1,127 +1,102 @@
-import * as React from "react"
-import { View, Image, ViewStyle, TextStyle, ImageStyle, SafeAreaView } from "react-native"
+import { useStyleSheet, StyleService } from "@ui-kitten/components"
+import React, { useState } from "react"
+import { Image } from "react-native"
+import Animated, { Clock, set, useCode, Value } from "react-native-reanimated"
+import { bInterpolate } from "react-native-redash"
+import { SafeAreaView, useSafeArea } from "react-native-safe-area-context"
 import { NavigationInjectedProps } from "react-navigation"
-import { Button, Header, Screen, Text, Wallpaper } from "../../components"
-import { color, spacing } from "../../theme"
-import { useTheme, ThemeContext } from "../../theme/themeProvider"
-const bowserLogo = require("./bowser.png")
+import { useMemoOne } from "use-memo-one"
+import { Button, Screen, SizedBox, Text, View } from "../../components"
+import { metrics, spacing, useThemes } from "../../theme"
+import { runTiming, runTimingWithEndAction } from "../../utils/reanimated"
+import { images } from "../../../assets"
 
-const FULL: ViewStyle = { flex: 1 }
-const CONTAINER: ViewStyle = {
-  backgroundColor: color.transparent,
-  paddingHorizontal: spacing[4],
-}
-const TEXT: TextStyle = {
-  color: color.palette.white,
-  fontFamily: "Montserrat",
-}
-const BOLD: TextStyle = { fontWeight: "bold" }
-const HEADER: TextStyle = {
-  paddingTop: spacing[3],
-  paddingBottom: spacing[4] + spacing[1],
-  paddingHorizontal: 0,
-}
-const HEADER_TITLE: TextStyle = {
-  ...TEXT,
-  ...BOLD,
-  fontSize: 12,
-  lineHeight: 15,
-  textAlign: "center",
-  letterSpacing: 1.5,
-}
-const TITLE_WRAPPER: TextStyle = {
-  ...TEXT,
-  textAlign: "center",
-}
-const TITLE: TextStyle = {
-  ...TEXT,
-  ...BOLD,
-  fontSize: 28,
-  lineHeight: 38,
-  textAlign: "center",
-}
-const ALMOST: TextStyle = {
-  ...TEXT,
-  ...BOLD,
-  fontSize: 26,
-  fontStyle: "italic",
-}
-const BOWSER: ImageStyle = {
-  alignSelf: "center",
-  marginVertical: spacing[5],
-  maxWidth: "100%",
-}
-const CONTENT: TextStyle = {
-  ...TEXT,
-  color: "#BAB6C8",
-  fontSize: 15,
-  lineHeight: 22,
-  marginBottom: spacing[5],
-}
-const CONTINUE: ViewStyle = {
-  paddingVertical: spacing[4],
-  paddingHorizontal: spacing[4],
-  backgroundColor: "#5D2555",
-}
-const CONTINUE_TEXT: TextStyle = {
-  ...TEXT,
-  ...BOLD,
-  fontSize: 13,
-  letterSpacing: 2,
-}
-const FOOTER: ViewStyle = { backgroundColor: "#20162D" }
-const FOOTER_CONTENT: ViewStyle = {
-  paddingVertical: spacing[4],
-  paddingHorizontal: spacing[4],
-}
+const themedStyles = StyleService.create({
+  full: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: spacing[6],
+  },
+  logo: {
+    ...metrics.images.logo,
+  },
+  footer: {
+    justifyContent: "flex-end",
+    paddingHorizontal: spacing[6],
+  },
+  subText: {
+    textAlign: "center",
+  },
+})
 
 export interface WelcomeScreenProps extends NavigationInjectedProps<{}> {}
 
 export const WelcomeScreen: React.FunctionComponent<WelcomeScreenProps> = props => {
-  const nextScreen = React.useMemo(() => () => props.navigation.navigate("demo"), [
-    props.navigation,
-  ])
+  const styles = useStyleSheet(themedStyles)
 
-  const { color, toggle } = useTheme()
+  const { welcomeAnim, clock, subtextAnim } = useMemoOne(
+    () => ({
+      welcomeAnim: new Value(0),
+      clock: new Clock(),
+      subtextAnim: new Value(0) as any,
+      outAnim: new Value(1) as any,
+    }),
+    [],
+  )
+  const [showWelcome, setShowWelcome] = useState(false)
+
+  useCode(() => {
+    if (showWelcome) return set(subtextAnim, runTiming(clock, 0.5, 1, 200))
+    return set(welcomeAnim, runTimingWithEndAction(clock, 0, 1, () => setShowWelcome(true)))
+  }, [showWelcome, welcomeAnim, subtextAnim])
+
+  const welcomeY: any = bInterpolate(welcomeAnim, 500, 1)
+  const welcomeOpacity: any = bInterpolate(welcomeAnim, 0, 1)
+  const insets = useSafeArea()
+
+  const { toggle } = useThemes()
 
   return (
-    <View style={FULL}>
-      <Wallpaper />
-      <Screen style={CONTAINER} preset="scroll" backgroundColor={color.transparent}>
-        <Header headerTx="welcomeScreen.poweredBy" style={HEADER} titleStyle={HEADER_TITLE} />
-        <Text style={TITLE_WRAPPER}>
-          <Text style={TITLE} text="Your new app, " />
-          <Text style={ALMOST} text="almost" />
-          <Text style={TITLE} text="!" />
-        </Text>
-        <Text style={TITLE} preset="header" tx="welcomeScreen.readyForLaunch" />
-        <Image source={bowserLogo} style={BOWSER} />
-        <Text style={CONTENT}>
-          This probably isn't what your app is going to look like. Unless your designer handed you
-          this screen and, in that case, congrats! You're ready to ship.
-        </Text>
-        <Text style={CONTENT}>
-          For everyone else, this is where you'll see a live preview of your fully functioning app
-          using Ignite.
-        </Text>
-        <Text style={{ color: color["primary"] }}>123</Text>
-        <Button
-          onPress={() => {
-            toggle()
+    <Screen style={styles.full}>
+      <Screen style={styles.container} preset="scroll">
+        <Animated.View
+          style={{
+            transform: [{ translateY: welcomeY }],
+            opacity: welcomeOpacity,
           }}
-          tx="toggle"
-        />
+        >
+          <Image source={images.chef} style={styles.logo} />
+          <Text tx="welcomeScreen.title" category="h1" />
+        </Animated.View>
+        <SizedBox h={4} />
+        <Animated.View
+          style={{
+            transform: [{ scale: subtextAnim }],
+            opacity: subtextAnim,
+          }}
+        >
+          <Text category="p1" style={styles.subText}>
+            welcomeScreen.subText
+          </Text>
+        </Animated.View>
       </Screen>
-      <SafeAreaView style={FOOTER}>
-        <View style={FOOTER_CONTENT}>
+
+      <View style={[styles.footer, { paddingBottom: insets.top }]}>
+        <Animated.View style={{ opacity: bInterpolate(welcomeAnim, -3, 1) }}>
           <Button
-            style={CONTINUE}
-            textStyle={CONTINUE_TEXT}
-            tx="welcomeScreen.continue"
-            onPress={nextScreen}
-          />
-        </View>
-      </SafeAreaView>
-    </View>
+            onPress={() => {
+              toggle()
+            }}
+            full
+          >
+            welcomeScreen.getStarted
+          </Button>
+        </Animated.View>
+      </View>
+    </Screen>
   )
 }

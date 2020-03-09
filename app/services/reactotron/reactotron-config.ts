@@ -22,7 +22,7 @@ export interface ReactotronConfig {
  */
 export const DEFAULT_REACTOTRON_CONFIG: ReactotronConfig = {
   clearOnLoad: true,
-  port: 8081,
+  port: 9090,
   host: "localhost",
   useAsyncStorage: true,
   state: {

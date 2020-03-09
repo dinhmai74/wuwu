@@ -1,4 +1,3 @@
-export * from "./bullet-item/bullet-item"
 export * from "./button/button"
 export * from "./checkbox/checkbox"
 export * from "./form-row/form-row"
@@ -9,3 +8,6 @@ export * from "./switch/switch"
 export * from "./text/text"
 export * from "./text-field/text-field"
 export * from "./wallpaper/wallpaper"
+export * from "./sized-box/sized-box"
+export * from "./view/view"
+

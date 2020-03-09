@@ -24,7 +24,9 @@
     "adb": "adb reverse tcp:9090 tcp:9090 && adb reverse tcp:3000 tcp:3000 && adb reverse tcp:9001 tcp:9001 && adb reverse tcp:8081 tcp:8081"
   },
   "dependencies": {
+    "@eva-design/eva": "^1.4.0",
     "@react-native-community/masked-view": "0.1.5",
+    "@ui-kitten/components": "^4.4.1",
     "apisauce": "1.0.3",
     "expo": "~36.0.0",
     "expo-localization": "~8.0.0",
@@ -39,10 +41,13 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
     "react-native-gesture-handler": "~1.5.0",
     "react-native-keychain": "^5.0.1",
+    "react-native-reanimated": "^1.7.0",
+    "react-native-redash": "^9.6.0",
     "react-native-safe-area-context": "0.6.0",
     "react-native-safe-area-view": "^1.0.0",
     "react-native-screens": "2.0.0-alpha.12",
     "react-native-splash-screen": "3.1.1",
+    "react-native-svg": "9.13.3",
     "react-native-web": "~0.11.7",
     "react-navigation": "^4.2.2",
     "react-navigation-stack": "^2.2.3",

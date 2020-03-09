@@ -1,6 +1,9 @@
 import React, { useEffect } from "react"
 import { getStorybookUI, configure } from "@storybook/react-native"
 import { initFonts } from "../app/theme/fonts"
+import { ApplicationProvider } from "@ui-kitten/components"
+import { mapping } from "@eva-design/eva"
+import { themes, AppThemeContext } from "../app/theme"
 
 declare var module
 
@@ -21,6 +24,19 @@ export const StorybookUIRoot: React.FunctionComponent = () => {
       }
     })()
   }, [])
+  const [theme, setTheme] = React.useState("light")
+  const currentTheme = themes[theme]
 
-  return <StorybookUI />
+  const toggle = () => {
+    const nextTheme = theme === "light" ? "dark" : "light"
+    setTheme(nextTheme)
+  }
+
+  return (
+    <AppThemeContext.Provider value={{ theme, toggle }}>
+      <ApplicationProvider mapping={mapping} theme={currentTheme}>
+        <StorybookUI />
+      </ApplicationProvider>
+    </AppThemeContext.Provider>
+  )
 }

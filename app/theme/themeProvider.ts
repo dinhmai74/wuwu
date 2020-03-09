@@ -1,27 +1,28 @@
 // @ts-ignore
-import React from "react"
-import { useStores } from "../models/root-store"
-import { ColorType, themes } from "./color"
+import React, { useContext } from "react"
+import { useTheme } from "@ui-kitten/components"
+import { Color } from "./color-model"
 
-export const ThemeContext = React.createContext({
+export const AppThemeContext = React.createContext({
   theme: "light",
-  toggleTheme: () => {},
+  toggle: () => {},
 })
 
-export const useTheme = (): {
-  color: ColorType
+interface UseThemes {
   toggle: () => void
-} => {
-  const { themeStore } = useStores()
-  const themeContext = React.useContext(ThemeContext)
-  const color = themeStore.type ? themes[themeStore.type] : themes.light
+  color: Color
+}
 
+export const useThemes = (): UseThemes => {
+  const themeContext = useContext(AppThemeContext)
   const toggle = () => {
-    themeContext.toggleTheme()
+    themeContext.toggle()
   }
 
   return {
-    color,
     toggle,
+    // @ts-ignore
+    color: useTheme(),
   }
 }
+

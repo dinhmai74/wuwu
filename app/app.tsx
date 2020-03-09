@@ -8,9 +8,11 @@ import { YellowBox } from "react-native"
 import { RootStore, RootStoreProvider, setupRootStore } from "./models/root-store"
 import { BackButtonHandler, exitRoutes, StatefulNavigator } from "./navigation"
 import { initFonts } from "./theme/fonts"
-import { ThemeContext } from "./theme"
+import { AppThemeContext, themes } from "./theme"
 import { contains } from "ramda"
 import { enableScreens } from "react-native-screens"
+import { ApplicationProvider } from "@ui-kitten/components"
+import { mapping } from "@eva-design/eva"
 
 // This puts screens in a native ViewController or Activity. If you want fully native
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
@@ -25,6 +27,7 @@ YellowBox.ignoreWarnings([
   "componentWillMount is deprecated",
   "componentWillReceiveProps is deprecated",
   "Require cycle:",
+  "Story with",
 ])
 
 /**
@@ -61,19 +64,22 @@ export default function App() {
     return null
   }
 
-  const toggleTheme = () => {
+  const currentTheme = themes[theme]
+
+  const toggle = () => {
     const nextTheme = theme === "light" ? "dark" : "light"
     setTheme(nextTheme)
-    rootStore.themeStore.toggle()
   }
 
   // otherwise, we're ready to render the app
   return (
     <RootStoreProvider value={rootStore}>
       <BackButtonHandler canExit={canExit}>
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
-          <StatefulNavigator />
-        </ThemeContext.Provider>
+        <AppThemeContext.Provider value={{ theme, toggle }}>
+          <ApplicationProvider mapping={mapping} theme={currentTheme}>
+            <StatefulNavigator />
+          </ApplicationProvider>
+        </AppThemeContext.Provider>
       </BackButtonHandler>
     </RootStoreProvider>
   )

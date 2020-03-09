@@ -1,37 +1,61 @@
+import { Button as KTButton, Spinner } from "@ui-kitten/components"
+import { flatten, mergeAll } from "ramda"
 import * as React from "react"
-import { TouchableOpacity } from "react-native"
-import { Text } from "../"
-import { viewPresets, textPresets } from "./button.presets"
+import { textPresets, viewPresets } from "./button.presets"
 import { ButtonProps } from "./button.props"
-import { mergeAll, flatten } from "ramda"
+import { translate } from "../../i18n"
+import { ViewStyle, ActivityIndicator } from "react-native"
 
-/**
- * For your text displaying needs.
- *
- * This component is a HOC over the built-in React Native one.
- */
-export function Button(props: ButtonProps) {
-  // grab the props
-  const {
-    preset = "primary",
-    tx,
-    text,
-    style: styleOverride,
-    textStyle: textStyleOverride,
-    children,
-    ...rest
-  } = props
+export class Button extends React.Component<ButtonProps> {
+  static defaultProps: any
 
-  const viewStyle = mergeAll(flatten([viewPresets[preset] || viewPresets.primary, styleOverride]))
-  const textStyle = mergeAll(
-    flatten([textPresets[preset] || textPresets.primary, textStyleOverride]),
-  )
+  renderLoading() {
+    const { loadingColor, loadingSize } = this.props
+    console.log("loadingColor", loadingColor)
+    return <ActivityIndicator size={loadingSize} color={loadingColor || "#fff"} />
+  }
 
-  const content = children || <Text tx={tx} text={text} style={textStyle} />
+  render() {
+    const {
+      preset = "primary",
+      tx,
+      txOptions,
+      text,
+      style: styleOverride,
+      textStyle: textStyleOverride,
+      children,
+      full,
+      loading,
+      ...rest
+    } = this.props
 
-  return (
-    <TouchableOpacity style={viewStyle} {...rest}>
-      {content}
-    </TouchableOpacity>
-  )
+    const notFullStyle: ViewStyle = !full && { alignSelf: "flex-start" }
+    const viewStyle = mergeAll(
+      flatten([viewPresets[preset] || viewPresets.primary, notFullStyle, styleOverride]),
+    )
+    const textStyle = mergeAll(
+      flatten([textPresets[preset] || textPresets.primary, textStyleOverride]),
+    )
+
+    let content: any
+    const customProps = {}
+
+    if (loading) {
+      Object.assign(customProps, {
+        icon: () => this.renderLoading(),
+      })
+    } else {
+      if (typeof children === "string") {
+        content = translate(children, txOptions)
+      } else content = children || text || (tx && translate(tx))
+    }
+
+    return (
+      <KTButton style={viewStyle} textStyle={textStyle} {...rest} {...customProps}>
+        {content}
+      </KTButton>
+    )
+  }
 }
+
+Button.defaultProps = {}

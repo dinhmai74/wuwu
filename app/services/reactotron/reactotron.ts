@@ -17,10 +17,8 @@ declare global {
   }
 }
 
-const _TAG_NAME = "TING"
-
 function tlog(message: string, ...params: any[]) {
-  console.log(`[${_TAG_NAME}]:${message}`, params)
+  console.log(`[tron]:${message}`, params)
 
   Tron.display({
     name: message,
