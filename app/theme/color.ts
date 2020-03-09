@@ -62,3 +62,19 @@ export const color = {
    */
   storybookTextColor: palette.black,
 }
+
+export const themes = {
+  default: {
+    ...color,
+  },
+  light: {
+    ...color,
+  },
+  dark: {
+    ...color,
+    primary: "green",
+  },
+}
+
+export type ColorType = typeof color
+export type ThemeType = keyof typeof themes

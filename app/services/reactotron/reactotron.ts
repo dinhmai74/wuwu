@@ -1,5 +1,5 @@
 import Tron from "reactotron-react-native"
-import { AsyncStorage } from "react-native"
+import { AsyncStorage, Platform } from "react-native"
 import { RootStore } from "../../models/root-store/root-store"
 import { onSnapshot } from "mobx-state-tree"
 import { ReactotronConfig, DEFAULT_REACTOTRON_CONFIG } from "./reactotron-config"
@@ -13,8 +13,24 @@ declare global {
      * Hey, it's Reactotron if we're in dev, and no-ops if we're in prod.
      */
     tron: typeof Tron
+    tlog: any
   }
 }
+
+const _TAG_NAME = "TING"
+
+function tlog(message: string, ...params: any[]) {
+  console.log(`[${_TAG_NAME}]:${message}`, params)
+
+  Tron.display({
+    name: message,
+    preview: params,
+    value: { message, params },
+    important: true,
+  })
+}
+
+console.tlog = tlog
 
 /** Do Nothing. */
 const noop = () => undefined

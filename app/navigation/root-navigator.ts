@@ -1,5 +1,6 @@
 import { createStackNavigator } from "react-navigation-stack"
 import { PrimaryNavigator } from "./primary-navigator"
+import { AuthNavigator } from "./auth-navigator"
 
 // prettier-ignore
 import {
@@ -7,6 +8,7 @@ import {
 
 export const RootNavigator = createStackNavigator(
   {
+    authStack: { screen: AuthNavigator },
     primaryStack: { screen: PrimaryNavigator },
   },
   {

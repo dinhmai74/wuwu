@@ -8,6 +8,7 @@ import { YellowBox } from "react-native"
 import { RootStore, RootStoreProvider, setupRootStore } from "./models/root-store"
 import { BackButtonHandler, exitRoutes, StatefulNavigator } from "./navigation"
 import { initFonts } from "./theme/fonts"
+import { ThemeContext } from "./theme"
 import { contains } from "ramda"
 import { enableScreens } from "react-native-screens"
 
@@ -46,6 +47,8 @@ export default function App() {
     })()
   }, [])
 
+  const [theme, setTheme] = React.useState("light")
+
   // Before we show the app, we have to wait for our state to be ready.
   // In the meantime, don't render anything. This will be the background
   // color set in native by rootView's background color.
@@ -58,11 +61,19 @@ export default function App() {
     return null
   }
 
+  const toggleTheme = () => {
+    const nextTheme = theme === "light" ? "dark" : "light"
+    setTheme(nextTheme)
+    rootStore.themeStore.toggle()
+  }
+
   // otherwise, we're ready to render the app
   return (
     <RootStoreProvider value={rootStore}>
       <BackButtonHandler canExit={canExit}>
-        <StatefulNavigator />
+        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+          <StatefulNavigator />
+        </ThemeContext.Provider>
       </BackButtonHandler>
     </RootStoreProvider>
   )

@@ -3,6 +3,7 @@ import { View, Image, ViewStyle, TextStyle, ImageStyle, SafeAreaView } from "rea
 import { NavigationInjectedProps } from "react-navigation"
 import { Button, Header, Screen, Text, Wallpaper } from "../../components"
 import { color, spacing } from "../../theme"
+import { useTheme, ThemeContext } from "../../theme/themeProvider"
 const bowserLogo = require("./bowser.png")
 
 const FULL: ViewStyle = { flex: 1 }
@@ -81,6 +82,8 @@ export const WelcomeScreen: React.FunctionComponent<WelcomeScreenProps> = props 
     props.navigation,
   ])
 
+  const { color, toggle } = useTheme()
+
   return (
     <View style={FULL}>
       <Wallpaper />
@@ -101,6 +104,13 @@ export const WelcomeScreen: React.FunctionComponent<WelcomeScreenProps> = props 
           For everyone else, this is where you'll see a live preview of your fully functioning app
           using Ignite.
         </Text>
+        <Text style={{ color: color["primary"] }}>123</Text>
+        <Button
+          onPress={() => {
+            toggle()
+          }}
+          tx="toggle"
+        />
       </Screen>
       <SafeAreaView style={FOOTER}>
         <View style={FOOTER_CONTENT}>
