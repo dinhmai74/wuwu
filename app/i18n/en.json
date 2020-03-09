@@ -8,9 +8,9 @@
     "invalidEmail": "Invalid email address."
   },
   "welcomeScreen": {
-    "poweredBy": "POWERED BY BOWSER",
-    "readyForLaunch": "Ready for launch.",
-    "continue": "CONTINUE"
+    "title": "Welcome",
+    "subText": "Lorem ipsum dolor sit amet, at sem omnis penatibus tellus scelerisque malesuada, lectus at fringilla feugiat enim eros, venenatis ac venenatis elit porta sit, elit amet ultricies metus pellentesque nulla. Mauris lectus, dui lacinia maecenas, suscipit pretium id faucibus pretium suspendisse. Urna amet purus sed ",
+    "getStarted": "Let's start"
   },
   "demoScreen": {
     "howTo": "HOW TO",

@@ -1,9 +1,8 @@
-import { useStyleSheet, StyleService } from "@ui-kitten/components"
 import React, { useState } from "react"
-import { Image } from "react-native"
+import { Image, StyleSheet } from "react-native"
 import Animated, { Clock, set, useCode, Value } from "react-native-reanimated"
 import { bInterpolate } from "react-native-redash"
-import { SafeAreaView, useSafeArea } from "react-native-safe-area-context"
+import { useSafeArea } from "react-native-safe-area-context"
 import { NavigationInjectedProps } from "react-navigation"
 import { useMemoOne } from "use-memo-one"
 import { Button, Screen, SizedBox, Text, View } from "../../components"
@@ -11,22 +10,23 @@ import { metrics, spacing, useThemes } from "../../theme"
 import { runTiming, runTimingWithEndAction } from "../../utils/reanimated"
 import { images } from "../../../assets"
 
-const themedStyles = StyleService.create({
-  full: {
-    flex: 1,
-  },
+const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
+    flex: 1,
     justifyContent: "center",
     paddingHorizontal: spacing[6],
-  },
-  logo: {
-    ...metrics.images.logo,
   },
   footer: {
     justifyContent: "flex-end",
     paddingHorizontal: spacing[6],
+  },
+  full: {
+    flex: 1,
+  },
+  logo: {
+    ...metrics.images.logo,
+    resizeMode: "contain",
   },
   subText: {
     textAlign: "center",
@@ -36,8 +36,6 @@ const themedStyles = StyleService.create({
 export interface WelcomeScreenProps extends NavigationInjectedProps<{}> {}
 
 export const WelcomeScreen: React.FunctionComponent<WelcomeScreenProps> = props => {
-  const styles = useStyleSheet(themedStyles)
-
   const { welcomeAnim, clock, subtextAnim } = useMemoOne(
     () => ({
       welcomeAnim: new Value(0),
