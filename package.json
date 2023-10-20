@@ -87,7 +87,7 @@
     "patch-package": "6.1.2",
     "postinstall-prepare": "1.0.1",
     "prettier": "1.18.2",
-    "react-devtools-core": "3.6.3",
+    "react-devtools-core": "4.28.4",
     "react-powerplug": "1.0.0",
     "rimraf": "2.6.3",
     "solidarity": "2.3.1",
